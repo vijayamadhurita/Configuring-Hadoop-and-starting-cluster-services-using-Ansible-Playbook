@@ -1,0 +1,7 @@
+java_sw_path: "/root/jdk-8u171-linux-x64.rpm"
+hadoop_sw_path: "/root/hadoop-1.2.1-1.x86_64.rpm"
+jdk_sw: "jdk-8u171-linux-x64.rpm"
+hadoop_sw: "hadoop-1.2.1-1.x86_64.rpm"
+nn_ip: "192.168.0.113"
+nn_dir: "/mynndir"
+dn_dir: "/mydndir"

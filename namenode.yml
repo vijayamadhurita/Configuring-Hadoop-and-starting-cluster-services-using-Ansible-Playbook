@@ -1,0 +1,55 @@
+- hosts: namenode
+  vars_files:
+  - vars.yml
+  tasks:
+          - name: Copy java software
+            copy:
+                    src: "{{ java_sw_path }}"
+                    dest: "/root"
+
+          - name: Copy hadoop software
+            copy:
+                    src: "{{ hadoop_sw_path }}"
+                    dest: "/root"
+
+          - name: Install java
+            command: "rpm -ivh {{ jdk_sw }}"
+            ignore_errors: yes
+
+          - name: Install hadoop
+            command: "rpm -ivh {{ hadoop_sw }} --force"
+            
+          - name: Create a directory if it does not exist
+            file:
+                    path: "{{ nn_dir }}"
+                    state: directory
+
+          - name: "Configuring hdfs-site.xml"
+            blockinfile:
+                   path: /etc/hadoop/hdfs-site.xml
+                   insertafter: "<configuration>"
+                   block: |
+                          <property>
+                          <name>dfs.name.dir</name>
+                          <value>{{ nn_dir }}</value>
+                          </property>  
+                          
+                          
+
+          - name: "Configuring core-site.xml"
+            blockinfile:
+                   path: /etc/hadoop/core-site.xml
+                   insertafter: "<configuration>"
+                   block: |
+                          <property>
+                          <name>fs.default.name</name>
+                          <value>hdfs://{{ nn_ip }}:9001</value>
+                          </property>                    
+          
+          - name: "Format the namenode"
+            shell: "echo Y | hadoop namenode -format " 
+            ignore_errors: yes
+            
+             
+          - name: Start namenode services
+            shell: "hadoop-daemon.sh start namenode"                           
